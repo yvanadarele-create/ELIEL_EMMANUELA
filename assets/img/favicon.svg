@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="ELIEL EMMANUELA">
+  <title>ELIEL EMMANUELA</title>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F5A4E"/>
+      <stop offset="1" stop-color="#0E3B33"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" fill="url(#g)"/>
+  <!-- Pointed horseshoe arch: two circles pulled apart to meet at the crown. -->
+  <path d="M27.5 77.5V60.5A30.6 30.6 0 0 1 50 31 30.6 30.6 0 0 1 72.5 60.5v17z" fill="#C8A96B"/>
+  <path d="M38.75 67V57A15.3 15.3 0 0 1 50 42.25 15.3 15.3 0 0 1 61.25 57v10z" fill="#F5EFE6"/>
+</svg>

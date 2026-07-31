@@ -1,0 +1,14 @@
+{
+  "name": "eliel-emmanuela",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ELIEL EMMANUELA — site vitrine, HTML/CSS/JS statique, sans étape de build",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 4200",
+    "test": "node scripts/check.mjs",
+    "sync": "node scripts/site.mjs && node scripts/check.mjs",
+    "assets": "node scripts/assets.mjs"
+  },
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="atelier-title">
+  <title id="atelier-title">Triptyque d'arches marocaines : le rose des cheveux, l'or du rituel, le vert du savon noir</title>
+  <defs>
+    <linearGradient id="at-ground" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0" stop-color="#FAF6EF"/>
+      <stop offset="0.62" stop-color="#F5EFE6"/>
+      <stop offset="1" stop-color="#EADFCE"/>
+    </linearGradient>
+    <linearGradient id="at-blush" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#FBF1F0"/>
+      <stop offset="0.55" stop-color="#F7E7E7"/>
+      <stop offset="1" stop-color="#E7C8C8"/>
+    </linearGradient>
+    <linearGradient id="at-gold" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#F1DCBB"/>
+      <stop offset="0.5" stop-color="#D4B08C"/>
+      <stop offset="1" stop-color="#A97F4E"/>
+    </linearGradient>
+    <linearGradient id="at-olive" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#2A6E5F"/>
+      <stop offset="0.55" stop-color="#164A40"/>
+      <stop offset="1" stop-color="#0A2A24"/>
+    </linearGradient>
+    <radialGradient id="at-halo" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#D4B08C" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#D4B08C" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#at-ground)"/>
+  <rect width="800" height="1000" fill="url(#at-halo)"/>
+
+  <!-- Cornice -->
+  <path d="M60 300h680" stroke="#8A6A34" stroke-opacity="0.35" stroke-width="2"/>
+  <path d="M60 312h680" stroke="#8A6A34" stroke-opacity="0.18"/>
+  <g fill="#8A6A34" fill-opacity="0.45">
+    <rect x="392" y="256" width="16" height="16" transform="rotate(45 400 264)"/>
+  </g>
+  <path d="M180 264h180M440 264h180" stroke="#8A6A34" stroke-opacity="0.3"/>
+
+  <!-- The triptych: one arch per universe, the ritual in gold between them. -->
+  <g stroke="#8A6A34" stroke-opacity="0.5" stroke-width="2">
+    <path d="M75 820V650A129.2 129.2 0 0 1 170 525.4 129.2 129.2 0 0 1 265 650v170z" fill="url(#at-blush)"/>
+    <path d="M275 820V620A170 170 0 0 1 400 456 170 170 0 0 1 525 620v200z" fill="url(#at-gold)"/>
+    <path d="M535 820V650A129.2 129.2 0 0 1 630 525.4 129.2 129.2 0 0 1 725 650v170z" fill="url(#at-olive)"/>
+  </g>
+
+  <!-- Inner rebate on the centre arch, the depth cue that makes it read as an opening. -->
+  <path d="M312 820V632A133 133 0 0 1 400 504a133 133 0 0 1 88 128v188"
+        fill="none" stroke="#F5EFE6" stroke-opacity="0.34" stroke-width="2"/>
+
+  <!-- A lantern hanging in the centre opening -->
+  <g stroke="#F5EFE6" stroke-opacity="0.6" fill="none" stroke-width="2">
+    <path d="M400 504v52"/>
+    <path d="M400 556l30 26-14 44h-32l-14-44z" fill="#F5EFE6" fill-opacity="0.22"/>
+    <path d="M386 626h28"/>
+  </g>
+
+  <!-- Floor, and a zellige band running along it -->
+  <path d="M0 820h800" stroke="#8A6A34" stroke-opacity="0.4" stroke-width="2"/>
+  <g stroke="#8A6A34" stroke-opacity="0.3" fill="none">
+    <g id="at-star">
+      <rect x="-17" y="-17" width="34" height="34"/>
+      <rect x="-17" y="-17" width="34" height="34" transform="rotate(45)"/>
+      <circle r="6"/>
+    </g>
+    <use href="#at-star" x="50" y="884"/>
+    <use href="#at-star" x="150" y="884"/>
+    <use href="#at-star" x="250" y="884"/>
+    <use href="#at-star" x="350" y="884"/>
+    <use href="#at-star" x="450" y="884"/>
+    <use href="#at-star" x="550" y="884"/>
+    <use href="#at-star" x="650" y="884"/>
+    <use href="#at-star" x="750" y="884"/>
+  </g>
+  <path d="M0 948h800" stroke="#8A6A34" stroke-opacity="0.25"/>
+
+  <!-- Reflections of the three openings on the polished floor -->
+  <g opacity="0.14">
+    <path d="M75 820h190v56H75zM275 820h250v76H275zM535 820h190v56H535z" fill="#8A6A34"/>
+  </g>
+</svg>

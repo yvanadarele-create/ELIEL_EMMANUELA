@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="creme-title">
+  <title id="creme-title">Pot de Crème Cheveux Naturels ELIEL EMMANUELA sur fond rose poudré</title>
+  <defs>
+    <linearGradient id="cr-ground" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#FBF1F0"/>
+      <stop offset="0.55" stop-color="#F7E7E7"/>
+      <stop offset="1" stop-color="#EEDADA"/>
+    </linearGradient>
+    <radialGradient id="cr-light" cx="0.72" cy="0.2" r="0.72">
+      <stop offset="0" stop-color="#D4B08C" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#D4B08C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cr-lid" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#B98F63"/>
+      <stop offset="0.28" stop-color="#E6C9A5"/>
+      <stop offset="0.55" stop-color="#D4B08C"/>
+      <stop offset="1" stop-color="#A87F55"/>
+    </linearGradient>
+    <linearGradient id="cr-body" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#EBD8D3"/>
+      <stop offset="0.24" stop-color="#FFFBF8"/>
+      <stop offset="0.62" stop-color="#F6E5DF"/>
+      <stop offset="1" stop-color="#DEC4BC"/>
+    </linearGradient>
+    <filter id="cr-shadow" x="-40%" y="-60%" width="180%" height="240%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#cr-ground)"/>
+  <rect width="800" height="1000" fill="url(#cr-light)"/>
+
+  <!-- The house arch, held back to a watermark. -->
+  <path d="M232 806V566A168 168 0 0 1 400 348 168 168 0 0 1 568 566v240"
+        fill="none" stroke="#D4B08C" stroke-opacity="0.34" stroke-width="1.5"/>
+
+  <!-- Botanical sprig, drawn as one stem with paired leaves. -->
+  <g stroke="#D4B08C" stroke-opacity="0.75" stroke-width="1.6" fill="none" stroke-linecap="round">
+    <path d="M138 848c26-84 34-166 24-246"/>
+    <path d="M150 780c-30-6-48-26-52-52 30 2 48 20 52 52z"/>
+    <path d="M156 712c28-12 42-34 40-60-28 8-42 28-40 60z"/>
+    <path d="M146 664c-26-10-38-30-36-54 26 8 38 26 36 54z"/>
+    <path d="M662 806c-22-70-28-138-20-204"/>
+    <path d="M652 748c24-10 36-28 34-50-24 6-36 24-34 50z"/>
+    <path d="M646 690c-22-8-32-24-30-44 22 6 32 22 30 44z"/>
+  </g>
+
+  <!-- Contact shadow -->
+  <ellipse cx="400" cy="812" rx="182" ry="22" fill="#2A1F1B" opacity="0.16" filter="url(#cr-shadow)"/>
+
+  <!-- Jar -->
+  <g>
+    <path d="M252 546h296v212a48 48 0 0 1-48 48H300a48 48 0 0 1-48-48z" fill="url(#cr-body)"/>
+    <path d="M252 546h296v212a48 48 0 0 1-48 48H300a48 48 0 0 1-48-48z" fill="none" stroke="#2A1F1B" stroke-opacity="0.1"/>
+    <rect x="248" y="530" width="304" height="18" rx="6" fill="#D4B08C"/>
+    <rect x="236" y="428" width="328" height="106" rx="20" fill="url(#cr-lid)"/>
+    <rect x="236" y="428" width="328" height="106" rx="20" fill="none" stroke="#8A6A44" stroke-opacity="0.4"/>
+    <!-- Knurling on the lid edge, the detail that reads as "not plastic". -->
+    <g stroke="#8A6A44" stroke-opacity="0.3">
+      <path d="M262 452v58M282 448v66M302 446v70M322 445v72M342 444v74M362 444v74M382 444v74M402 444v74M422 444v74M442 444v74M462 445v72M482 446v70M502 448v66M522 452v58"/>
+    </g>
+    <!-- Highlight down the left shoulder -->
+    <path d="M286 566c-8 62-8 122 0 182" stroke="#FFFFFF" stroke-opacity="0.75" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <!-- Label -->
+    <rect x="300" y="600" width="200" height="128" fill="none" stroke="#8A6A44" stroke-opacity="0.45"/>
+    <path d="M378 686v-30a22 22 0 0 1 22-28 22 22 0 0 1 22 28v30z" fill="#8A6A44" fill-opacity="0.5"/>
+    <path d="M340 706h120" stroke="#8A6A44" stroke-opacity="0.4"/>
+    <path d="M352 630h96" stroke="#8A6A44" stroke-opacity="0.4"/>
+  </g>
+</svg>

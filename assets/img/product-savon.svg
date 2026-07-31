@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="savon-title">
+  <title id="savon-title">Savon noir marocain authentique dans une coupelle dorée, fond vert olive</title>
+  <defs>
+    <radialGradient id="sv-ground" cx="0.5" cy="0.32" r="0.85">
+      <stop offset="0" stop-color="#24685A"/>
+      <stop offset="0.6" stop-color="#164A40"/>
+      <stop offset="1" stop-color="#0B2F29"/>
+    </radialGradient>
+    <radialGradient id="sv-light" cx="0.5" cy="0.24" r="0.5">
+      <stop offset="0" stop-color="#C8A96B" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#C8A96B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sv-paste" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#3A3A28"/>
+      <stop offset="0.42" stop-color="#1C1D14"/>
+      <stop offset="1" stop-color="#0D0E09"/>
+    </linearGradient>
+    <linearGradient id="sv-dish" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0" stop-color="#8A6A34"/>
+      <stop offset="0.35" stop-color="#E0C48C"/>
+      <stop offset="0.68" stop-color="#C8A96B"/>
+      <stop offset="1" stop-color="#7E5F30"/>
+    </linearGradient>
+    <filter id="sv-shadow" x="-40%" y="-80%" width="180%" height="280%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#sv-ground)"/>
+
+  <!-- Zellige: an eight-point star built from two squares, repeated as a faint grid. -->
+  <g stroke="#C8A96B" stroke-opacity="0.13" fill="none">
+    <g id="sv-star">
+      <rect x="-26" y="-26" width="52" height="52"/>
+      <rect x="-26" y="-26" width="52" height="52" transform="rotate(45)"/>
+    </g>
+    <use href="#sv-star" x="100" y="120"/>
+    <use href="#sv-star" x="260" y="120"/>
+    <use href="#sv-star" x="420" y="120"/>
+    <use href="#sv-star" x="580" y="120"/>
+    <use href="#sv-star" x="700" y="120"/>
+    <use href="#sv-star" x="180" y="240"/>
+    <use href="#sv-star" x="620" y="240"/>
+    <use href="#sv-star" x="100" y="880"/>
+    <use href="#sv-star" x="700" y="880"/>
+  </g>
+
+  <rect width="800" height="1000" fill="url(#sv-light)"/>
+
+  <!-- Arch, as an outline rather than a fill so the ground shows through. -->
+  <path d="M244 800V576A212 212 0 0 1 400 342 212 212 0 0 1 556 576v224"
+        fill="none" stroke="#C8A96B" stroke-opacity="0.6" stroke-width="2.5"/>
+  <path d="M282 800V590A161 161 0 0 1 400 412 161 161 0 0 1 518 590v210"
+        fill="none" stroke="#C8A96B" stroke-opacity="0.3" stroke-width="1.5"/>
+
+  <!-- Argan branch -->
+  <g stroke="#C8A96B" stroke-opacity="0.65" stroke-width="1.6" fill="none" stroke-linecap="round">
+    <path d="M652 802c-30-92-38-176-26-252"/>
+    <path d="M642 726c28-12 42-32 40-58-28 8-42 28-40 58z"/>
+    <path d="M634 664c-26-10-38-28-36-52 26 8 38 26 36 52z"/>
+    <path d="M638 600c26-12 38-32 34-56-26 10-36 30-34 56z"/>
+    <circle cx="626" cy="562" r="9" fill="#C8A96B" fill-opacity="0.4" stroke="none"/>
+    <circle cx="654" cy="596" r="6" fill="#C8A96B" fill-opacity="0.3" stroke="none"/>
+  </g>
+
+  <ellipse cx="400" cy="790" rx="204" ry="26" fill="#04150F" opacity="0.55" filter="url(#sv-shadow)"/>
+
+  <!-- Dish and the paste in it -->
+  <g>
+    <path d="M228 686h344a172 172 0 0 1-172 96 172 172 0 0 1-172-96z" fill="url(#sv-dish)"/>
+    <ellipse cx="400" cy="686" rx="172" ry="40" fill="#E0C48C"/>
+    <ellipse cx="400" cy="686" rx="172" ry="40" fill="none" stroke="#7E5F30" stroke-opacity="0.6"/>
+    <ellipse cx="400" cy="688" rx="144" ry="32" fill="url(#sv-paste)"/>
+    <!-- The soap sits proud of the rim; the gloss is what says "not a black hole". -->
+    <path d="M292 676c26-30 66-46 108-46s82 16 108 46c-24 22-64 34-108 34s-84-12-108-34z" fill="url(#sv-paste)"/>
+    <path d="M330 660c14-16 40-26 62-26" stroke="#B7C6AE" stroke-opacity="0.5" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M452 646c14 4 26 11 34 20" stroke="#B7C6AE" stroke-opacity="0.3" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <ellipse cx="366" cy="692" rx="26" ry="8" fill="#FFFFFF" opacity="0.07"/>
+  </g>
+
+  <!-- A cut bar in front of the dish: two faces and a contact shadow, so it sits
+       on the same floor as everything else instead of floating. -->
+  <g transform="translate(56 -10)">
+    <ellipse cx="238" cy="830" rx="100" ry="16" fill="#04150F" opacity="0.5" filter="url(#sv-shadow)"/>
+    <path d="M158 806a10 10 0 0 1 10-10h140a10 10 0 0 1 10 10v24a10 10 0 0 1-10 10H168a10 10 0 0 1-10-10z" fill="#0C0E08"/>
+    <path d="M172 786h132a14 14 0 0 1 14 14v6H158v-6a14 14 0 0 1 14-14z" fill="#3F4229"/>
+    <path d="M158 806h160" stroke="#C8A96B" stroke-opacity="0.3" stroke-width="1.5"/>
+    <path d="M176 796c30-6 62-6 92-2" stroke="#9DAE93" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M180 820c26-5 54-6 80-3" stroke="#7C8B74" stroke-opacity="0.28" stroke-width="4" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

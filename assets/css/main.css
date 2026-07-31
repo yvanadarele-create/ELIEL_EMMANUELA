@@ -1,0 +1,1740 @@
+@charset "UTF-8";
+/* =============================================================================
+   ELIEL EMMANUELA — rituels de beauté marocaine
+   -----------------------------------------------------------------------------
+   One stylesheet, no build step, no framework. The site is served as static
+   files, so everything a page needs is here and the whole thing is one cached
+   request on the second view.
+
+   The layout it describes is a scroll journey through two brand universes:
+
+     blush  — Crème Cheveux Naturels : soft, feminine, powder pink
+     sand   — the caravan between them
+     olive  — Savon Noir Marocain    : deep green, gold, spa ritual
+
+   Sections declare which universe they are in with a `stage--*` class and the
+   `.stage-fade` bands do the travelling between them, so the transition is pure
+   CSS and survives a visitor with JavaScript off or a slow connection on 3G.
+   ========================================================================== */
+
+/* --- Fonts ----------------------------------------------------------------
+ *
+ * Self-hosted rather than loaded from Google: most visitors arrive from an
+ * Instagram or TikTok in-app browser on a mobile network in Abidjan, where a
+ * second DNS lookup and TLS handshake costs more than the font files do. Both
+ * families are variable, so one file per style covers every weight used.
+ */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../fonts/cormorant-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../fonts/cormorant-var-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../fonts/cormorant-italic-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("../fonts/cormorant-italic-var-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("../fonts/manrope-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("../fonts/manrope-var-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* --- Tokens ---------------------------------------------------------------
+ *
+ * The two palettes are the brand's; the `--ink-*` values are not. Champagne and
+ * Moroccan gold are beautiful and completely unreadable as text on a light
+ * ground (#D4B08C on the blush sits near 1.8:1), so a darkened gold is defined
+ * for anywhere gold has to carry words. The rule this stylesheet keeps: gold
+ * draws rules, borders and ornament; `--ink-gold` writes.
+ */
+:root {
+  /* Hair care */
+  --blush: #f7e7e7;
+  --rose: #eedada;
+  --champagne: #d4b08c;
+  --cocoa: #2a1f1b;
+
+  /* Moroccan black soap */
+  --olive: #0e3b33;
+  --emerald: #1f5a4e;
+  --gold: #c8a96b;
+  --sand: #f5efe6;
+
+  /* Readable ink, checked against WCAG AA at body sizes */
+  --ink: var(--cocoa); /* 14.4:1 on blush */
+  --ink-soft: #5b4a42; /* 6.8:1 on blush */
+  --ink-gold: #7a5c2c; /* 5.0:1 on blush — the only gold that may hold text */
+  --ink-sand: #f5efe6; /* 15.2:1 on olive */
+  --ink-sand-soft: #cfdcd5; /* 8.7:1 on olive */
+
+  /* Per-stage aliases. Sections re-point these and everything inside follows. */
+  --bg: var(--blush);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --accent: var(--champagne);
+  --accent-ink: var(--ink-gold);
+  --rule: rgb(42 31 27 / 0.14);
+
+  --shell: 78rem;
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --section-y: clamp(4rem, 8.5vw, 7.5rem);
+  --radius: 2px;
+
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: "Manrope", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Height of the sticky order bar, so page bottoms can clear it on mobile. */
+  --buybar: 0px;
+}
+
+/* --- Reset ---------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Anchored sections must clear the fixed header. */
+  scroll-padding-top: 6rem;
+}
+
+body {
+  margin: 0;
+  background: var(--blush);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(1rem, 0.97rem + 0.16vw, 1.09rem);
+  font-weight: 350;
+  line-height: 1.75;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: from-font;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+::selection {
+  background: var(--champagne);
+  color: var(--cocoa);
+}
+
+/* --- Typography ----------------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+.display {
+  font-family: var(--serif);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.display {
+  font-size: clamp(3.1rem, 12.5vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 7.2vw, 5.4rem);
+}
+
+h2 {
+  font-size: clamp(2.1rem, 5.4vw, 3.9rem);
+  line-height: 1.04;
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+p {
+  margin: 0 0 1.15em;
+  text-wrap: pretty;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* An italic Cormorant fragment inside a display line — the editorial accent the
+ * brand leans on. Kept as a class so it never lands on a whole heading. */
+.accent {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent-ink);
+}
+
+.lead {
+  font-size: clamp(1.1rem, 1.02rem + 0.42vw, 1.35rem);
+  line-height: 1.62;
+  color: var(--fg-soft);
+  max-width: 34ch;
+}
+
+.eyebrow {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin: 0 0 1.6rem;
+}
+
+.eyebrow--num::before {
+  content: attr(data-num) " ";
+  opacity: 0.55;
+  margin-right: 0.35em;
+}
+
+.quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+
+/* Cormorant ships old-style figures by default, which are lovely in prose and a
+ * liability on a price: its "0" sits at x-height and "01" reads as "OI". Lining
+ * figures are forced anywhere a number has to be read as a number. */
+.price,
+.eyebrow--num::before,
+.ritual__step::before,
+.spec-list dt {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.price {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.price small {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  margin-left: 0.7em;
+}
+
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 200;
+  padding: 0.85rem 1.6rem;
+  background: var(--cocoa);
+  color: var(--sand);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+}
+
+/* --- Layout --------------------------------------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+.section--tight {
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+
+/* The editorial split: a narrow title rail and a wide body. Collapses to a
+ * single column well before the rail gets too tight to read. */
+.split {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (min-width: 62rem) {
+  .split {
+    grid-template-columns: minmax(14rem, 0.85fr) minmax(0, 1.4fr);
+  }
+
+  .split--wide-first {
+    grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 0.85fr);
+  }
+
+  .split--sticky > :first-child {
+    position: sticky;
+    top: 7.5rem;
+  }
+}
+
+/* Product showcase: an arch-framed image beside its copy. The image column is
+ * deliberately the narrower one — an arch this tall reads as a monument at half
+ * the page width, and it pushed the price and the order button off the screen. */
+.showcase {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+
+.showcase__media {
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 58rem) {
+  .showcase {
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  }
+
+  .showcase--text-first {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  }
+
+  .showcase__media {
+    margin-inline: 0;
+  }
+}
+
+.stack > * + * {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: var(--rule);
+}
+
+/* Gold ornament between blocks: hairline, lozenge, hairline. */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--accent);
+}
+
+.ornament::before,
+.ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentcolor;
+  opacity: 0.5;
+}
+
+.ornament span {
+  width: 7px;
+  height: 7px;
+  rotate: 45deg;
+  background: currentcolor;
+}
+
+.ornament--left::before {
+  display: none;
+}
+
+.ornament--left {
+  max-width: 12rem;
+}
+
+/* --- Stages ---------------------------------------------------------------
+ *
+ * A stage is one universe. It sets the background and re-points the ink tokens,
+ * so a component written once reads correctly in both worlds without a variant.
+ */
+.stage {
+  position: relative;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.stage--blush {
+  --bg: var(--blush);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --accent: var(--champagne);
+  --accent-ink: var(--ink-gold);
+  --rule: rgb(42 31 27 / 0.14);
+}
+
+.stage--rose {
+  --bg: var(--rose);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --accent: var(--champagne);
+  --accent-ink: var(--ink-gold);
+  --rule: rgb(42 31 27 / 0.16);
+}
+
+.stage--sand {
+  --bg: var(--sand);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --accent: var(--champagne);
+  --accent-ink: var(--ink-gold);
+  --rule: rgb(42 31 27 / 0.14);
+}
+
+.stage--olive {
+  --bg: var(--olive);
+  --fg: var(--ink-sand);
+  --fg-soft: var(--ink-sand-soft);
+  --accent: var(--gold);
+  --accent-ink: var(--gold);
+  --rule: rgb(200 169 107 / 0.28);
+}
+
+.stage--emerald {
+  --bg: var(--emerald);
+  --fg: var(--ink-sand);
+  --fg-soft: var(--ink-sand-soft);
+  --accent: var(--gold);
+  --accent-ink: var(--gold);
+  --rule: rgb(200 169 107 / 0.3);
+}
+
+.stage--cocoa {
+  --bg: var(--cocoa);
+  --fg: var(--sand);
+  --fg-soft: #cbbcb4;
+  --accent: var(--champagne);
+  --accent-ink: var(--champagne);
+  --rule: rgb(245 239 230 / 0.18);
+}
+
+/* The travelling between universes. A tall band rather than a hard edge, so the
+ * eye reads one continuous colour move instead of two adjacent blocks. */
+.stage-fade {
+  height: clamp(5rem, 14vh, 10rem);
+  background: linear-gradient(to bottom, var(--from), var(--to));
+}
+
+.stage-fade--blush-sand {
+  --from: var(--blush);
+  --to: var(--sand);
+}
+
+.stage-fade--rose-sand {
+  --from: var(--rose);
+  --to: var(--sand);
+}
+
+.stage-fade--sand-olive {
+  --from: var(--sand);
+  --to: var(--olive);
+}
+
+.stage-fade--olive-sand {
+  --from: var(--olive);
+  --to: var(--sand);
+}
+
+.stage-fade--sand-blush {
+  --from: var(--sand);
+  --to: var(--blush);
+}
+
+.stage-fade--blush-rose {
+  --from: var(--blush);
+  --to: var(--rose);
+}
+
+.stage-fade--olive-emerald {
+  --from: var(--olive);
+  --to: var(--emerald);
+}
+
+.stage-fade--emerald-olive {
+  --from: var(--emerald);
+  --to: var(--olive);
+}
+
+.stage-fade--olive-cocoa {
+  --from: var(--olive);
+  --to: var(--cocoa);
+}
+
+/* Inside one universe the shift is a nudge, not a journey. */
+.stage-fade--near {
+  height: clamp(3rem, 7vh, 5rem);
+}
+
+/* Zellige: the eight-point star of Moroccan tilework, drawn with gradients so it
+ * costs no request. Deliberately faint — it is a texture, not a pattern. */
+.stage--zellige {
+  background-image:
+    repeating-linear-gradient(45deg, rgb(200 169 107 / 0.05) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(-45deg, rgb(200 169 107 / 0.05) 0 1px, transparent 1px 14px);
+  background-position: center;
+}
+
+.stage--grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background:
+    radial-gradient(60rem 40rem at 82% 8%, rgb(200 169 107 / 0.1), transparent 70%),
+    radial-gradient(48rem 34rem at 5% 92%, rgb(31 90 78 / 0.35), transparent 70%);
+}
+
+/* --- Header --------------------------------------------------------------- */
+
+.masthead {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  transition: background 0.4s var(--ease), box-shadow 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.masthead__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding-block: 0.9rem;
+}
+
+/* The masthead floats transparently over the first section, so its ink has to
+ * match that section's universe. Cocoa-on-olive is invisible.
+ *
+ * The page declares the opening universe on <body>, which makes the header right
+ * on the first paint and with JavaScript blocked; main.js then keeps it in step
+ * as the journey crosses from blush into olive. The `is-*` classes are declared
+ * after this rule deliberately: they carry the same specificity, so source order
+ * is what lets the live state win over the initial one. */
+[data-masthead-ink="light"] .masthead {
+  color: var(--ink-sand);
+}
+
+.masthead.is-dark {
+  color: var(--ink-sand);
+}
+
+.masthead.is-light {
+  color: var(--ink);
+}
+
+/* Solid once the page has moved, so the wordmark never sits on a photograph. */
+.masthead.is-stuck {
+  background: color-mix(in srgb, var(--blush) 92%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgb(42 31 27 / 0.08);
+}
+
+.masthead.is-stuck.is-dark {
+  background: color-mix(in srgb, var(--olive) 92%, transparent);
+  box-shadow: 0 1px 0 rgb(200 169 107 / 0.2);
+}
+
+.masthead.is-hidden {
+  transform: translateY(-100%);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand__mark {
+  width: 1.6rem;
+  height: 1.85rem;
+  flex: none;
+}
+
+.brand__name {
+  font-family: var(--serif);
+  font-size: clamp(1.02rem, 0.95rem + 0.4vw, 1.3rem);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.nav {
+  display: none;
+}
+
+.nav__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.1rem, 2.4vw, 2.2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__link {
+  position: relative;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-block: 0.5rem;
+  white-space: nowrap;
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.15rem;
+  height: 1px;
+  background: currentcolor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.nav__link:hover::after,
+.nav__link[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (min-width: 60rem) {
+  .nav {
+    display: block;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+}
+
+.nav-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 2.9rem;
+  height: 2.9rem;
+  padding: 0;
+  margin-right: -0.6rem;
+  align-items: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 1.35rem;
+  height: 1px;
+  background: currentcolor;
+  transition: transform 0.35s var(--ease), opacity 0.2s linear;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Mobile drawer. Hidden with `display:none` via [hidden] so it is out of the tab
+ * order when closed — a menu you can tab into but cannot see is a trap. */
+.drawer[hidden] {
+  display: none;
+}
+
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--olive);
+  color: var(--ink-sand);
+  padding: 6.5rem var(--gutter) 2.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: drawer-in 0.42s var(--ease-out) both;
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+}
+
+.drawer__list {
+  list-style: none;
+  margin: 0 0 2.5rem;
+  padding: 0;
+  border-top: 1px solid rgb(200 169 107 / 0.24);
+}
+
+.drawer__list a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 0;
+  border-bottom: 1px solid rgb(200 169 107 / 0.24);
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.drawer__list a span {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* --- Buttons -------------------------------------------------------------- */
+
+.btn {
+  --btn-bg: var(--cocoa);
+  --btn-fg: var(--sand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 3.25rem;
+  padding: 0.9rem 1.9rem;
+  border: 1px solid var(--btn-bg);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s var(--ease),
+    transform 0.35s var(--ease);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  border-color: color-mix(in srgb, currentcolor 38%, transparent);
+}
+
+.btn--ghost:hover {
+  border-color: currentcolor;
+}
+
+.btn--wa {
+  --btn-bg: #128c4a;
+  --btn-fg: #fff;
+  border-color: #128c4a;
+}
+
+.btn--wa:hover {
+  --btn-bg: #0f7a40;
+  border-color: #0f7a40;
+}
+
+.btn--gold {
+  --btn-bg: var(--gold);
+  --btn-fg: #16241f;
+  border-color: var(--gold);
+}
+
+/* Sized by position as well as by class: an icon pasted into a button without
+ * the class is otherwise laid out as a flex item with no intrinsic width and
+ * swells to fill the button. */
+.btn__icon,
+.btn > svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+  fill: currentcolor;
+}
+
+/* Text link with a moving rule under it. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid color-mix(in srgb, currentcolor 40%, transparent);
+  transition: border-color 0.35s var(--ease), gap 0.35s var(--ease);
+}
+
+.link:hover {
+  border-color: currentcolor;
+  gap: 0.85rem;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.1rem;
+  align-items: center;
+}
+
+/* --- Arch frame -----------------------------------------------------------
+ *
+ * The Moroccan arch, in percentages so it keeps its proportions at every width.
+ * Used for every product and portrait frame on the site — it is the single motif
+ * that ties the two universes together.
+ */
+.arch {
+  position: relative;
+  overflow: hidden;
+  border-radius: 46% 46% 3% 3% / 55% 55% 2% 2%;
+  background: var(--rose);
+}
+
+.arch > img,
+.arch > svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.arch--outlined {
+  outline: 1px solid var(--rule);
+  outline-offset: 0.75rem;
+}
+
+.arch--tall {
+  aspect-ratio: 3 / 4;
+}
+
+.arch--portrait {
+  aspect-ratio: 4 / 5;
+}
+
+/* --- Hero -----------------------------------------------------------------
+ *
+ * Full viewport on first paint, using `svh` so the mobile browser chrome cannot
+ * push the call to action below the fold — the failure that costs the most on a
+ * site whose visitors arrive from an in-app browser.
+ */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 100svh;
+  padding-block: 8rem clamp(2.5rem, 7vh, 5rem);
+  overflow: hidden;
+}
+
+.hero__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 38rem at 72% 18%, rgb(212 176 140 / 0.42), transparent 68%),
+    radial-gradient(46rem 40rem at 12% 88%, rgb(238 218 218 / 0.85), transparent 70%);
+}
+
+.hero__inner {
+  position: relative;
+  width: 100%;
+}
+
+.hero__title {
+  margin-bottom: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.hero__title span {
+  display: block;
+}
+
+.hero__foot {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  align-items: end;
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+
+@media (min-width: 52rem) {
+  .hero__foot {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+.hero__scroll {
+  display: none;
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.hero__scroll::after {
+  content: "";
+  width: 1px;
+  height: 3.25rem;
+  background: linear-gradient(to bottom, currentcolor, transparent);
+  animation: scroll-cue 2.4s var(--ease) infinite;
+  transform-origin: top;
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+@media (min-width: 52rem) {
+  .hero__scroll {
+    display: flex;
+    writing-mode: vertical-rl;
+  }
+}
+
+/* Hero on a product page: image beside the copy rather than under it. */
+.hero--product {
+  min-height: auto;
+  padding-block: 8.5rem clamp(3rem, 8vw, 6rem);
+  align-items: center;
+}
+
+.hero--product .hero__inner {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+
+@media (min-width: 58rem) {
+  .hero--product .hero__inner {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+/* --- Marquee --------------------------------------------------------------
+ *
+ * A slow ribbon of the brand's promises. Duplicated content is aria-hidden so a
+ * screen reader hears the list once.
+ */
+.marquee {
+  overflow: hidden;
+  padding-block: 1.15rem;
+  border-block: 1px solid var(--rule);
+  user-select: none;
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 3rem;
+  animation: marquee 38s linear infinite;
+}
+
+.marquee__track > * {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  white-space: nowrap;
+}
+
+.marquee__track > *::after {
+  content: "◆";
+  font-size: 0.5rem;
+  color: var(--accent);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* --- Product cards -------------------------------------------------------- */
+
+.products {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+@media (min-width: 52rem) {
+  .products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  /* Held narrower than its grid track: the price is right-aligned in this block,
+   * and across a full half-page column it drifts away from the name it belongs
+   * to. */
+  max-width: 30rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card__media {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 23rem;
+  transition: transform 0.7s var(--ease-out);
+}
+
+.product-card:hover .product-card__media {
+  transform: translateY(-6px);
+}
+
+.product-card__media > svg {
+  transition: scale 0.9s var(--ease-out);
+}
+
+.product-card:hover .product-card__media > svg {
+  scale: 1.04;
+}
+
+.product-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.product-card__meta {
+  color: var(--fg-soft);
+  font-size: 0.95rem;
+  max-width: 40ch;
+}
+
+/* --- Feature / benefit lists ---------------------------------------------- */
+
+.grid {
+  display: grid;
+  gap: clamp(1.75rem, 3.5vw, 3rem);
+}
+
+@media (min-width: 40rem) {
+  .grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 56rem) {
+  .grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 40rem) and (max-width: 55.999rem) {
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.feature {
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+}
+
+.feature h3 {
+  margin-bottom: 0.6rem;
+}
+
+.feature p {
+  color: var(--fg-soft);
+  font-size: 0.97rem;
+}
+
+.feature__num {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--accent-ink);
+  margin-bottom: 0.9rem;
+}
+
+/* Ingredient / spec rows */
+.spec-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Rows are <div> inside a <dl> and <li> inside a <ul>: a <dl> may only contain
+ * <div>, <dt> and <dd>, so a description list cannot use list items. */
+.spec-list > li,
+.spec-list > div {
+  display: grid;
+  gap: 0.15rem 2rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.spec-list > :first-child {
+  border-top: 1px solid var(--rule);
+}
+
+@media (min-width: 40rem) {
+  .spec-list > li,
+  .spec-list > div {
+    grid-template-columns: minmax(9rem, 0.5fr) minmax(0, 1fr);
+  }
+}
+
+.spec-list dt,
+.spec-list b {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+
+.spec-list p,
+.spec-list dd {
+  margin: 0;
+  color: var(--fg-soft);
+  font-size: 0.95rem;
+}
+
+/* Bulleted list with a gold lozenge instead of a disc. */
+.checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.checks li {
+  position: relative;
+  padding-left: 1.7rem;
+  color: var(--fg-soft);
+}
+
+.checks li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.78em;
+  width: 6px;
+  height: 6px;
+  rotate: 45deg;
+  background: var(--accent);
+}
+
+/* --- Ritual steps --------------------------------------------------------- */
+
+.ritual {
+  counter-reset: step;
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+@media (min-width: 52rem) {
+  .ritual--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ritual__step {
+  position: relative;
+  counter-increment: step;
+  padding-top: 4.5rem;
+}
+
+.ritual__step::before {
+  content: "0" counter(step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--serif);
+  font-size: 3.4rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.55;
+}
+
+/* --- Testimonials --------------------------------------------------------- */
+
+.testimonials {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+@media (min-width: 56rem) {
+  .testimonials--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.testimonial {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
+.testimonial blockquote {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.testimonial figcaption {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  margin-top: auto;
+}
+
+.stars {
+  display: flex;
+  gap: 0.2rem;
+  color: var(--accent);
+}
+
+.stars svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  fill: currentcolor;
+}
+
+/* --- Accordion (native <details>) ------------------------------------------
+ *
+ * Deliberately not a JavaScript widget: <details> is keyboard-accessible, is
+ * announced correctly, opens without script, and is findable by the browser's
+ * in-page search in current Chrome and Safari.
+ */
+.faq {
+  border-top: 1px solid var(--rule);
+}
+
+.faq details {
+  border-bottom: 1px solid var(--rule);
+}
+
+.faq summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.3;
+  transition: color 0.3s var(--ease);
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "";
+  flex: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 0.4rem;
+  background: currentcolor;
+  color: var(--accent);
+  clip-path: polygon(45% 0, 55% 0, 55% 45%, 100% 45%, 100% 55%, 55% 55%, 55% 100%, 45% 100%, 45% 55%, 0 55%, 0 45%, 45% 45%);
+  transition: rotate 0.4s var(--ease), clip-path 0.2s linear;
+}
+
+.faq details[open] summary::after {
+  rotate: 135deg;
+}
+
+.faq summary:hover {
+  color: var(--accent-ink);
+}
+
+.faq__answer {
+  padding-bottom: 1.75rem;
+  max-width: 62ch;
+  color: var(--fg-soft);
+}
+
+/* --- Contact / form ------------------------------------------------------- */
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.35rem;
+}
+
+.field label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+
+.field input,
+.field select,
+.field textarea {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  min-height: 3.1rem;
+  width: 100%;
+  transition: border-color 0.3s var(--ease);
+}
+
+.field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: color-mix(in srgb, currentcolor 35%, transparent);
+}
+
+.field :is(input, select, textarea):focus-visible {
+  outline-offset: 1px;
+}
+
+.field__hint {
+  font-size: 0.82rem;
+  color: var(--fg-soft);
+}
+
+/* A block that only makes sense with script running, and its counterpart. The
+ * WhatsApp composer is the only user: a form that cannot submit is worse than no
+ * form, so without script the direct channels are shown instead. */
+.js-only {
+  display: none;
+}
+
+.js .js-only {
+  display: block;
+}
+
+.js .no-js-only {
+  display: none;
+}
+
+/* --- Sticky order affordances ---------------------------------------------
+ *
+ * Two of them, and they must never collide. The floating button is the site-wide
+ * way to reach WhatsApp; the bar is the product-page buy action and only exists
+ * on small screens, where it pushes the button up by its own height.
+ */
+.wa-fab {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: calc(clamp(1rem, 3vw, 2rem) + var(--buybar));
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 999px;
+  background: #128c4a;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgb(18 60 40 / 0.28);
+  transition: transform 0.4s var(--ease-out), bottom 0.4s var(--ease);
+}
+
+.wa-fab:hover {
+  transform: translateY(-3px);
+}
+
+.wa-fab svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: currentcolor;
+  flex: none;
+}
+
+.wa-fab__label {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .wa-fab__label {
+    display: inline;
+  }
+}
+
+.buybar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem var(--gutter) calc(0.75rem + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--cocoa) 96%, transparent);
+  backdrop-filter: blur(12px);
+  color: var(--sand);
+}
+
+.buybar .price {
+  font-size: 1.35rem;
+}
+
+.buybar .price small {
+  color: #c9bab2;
+  margin-left: 0.5em;
+}
+
+.buybar .btn {
+  min-height: 2.9rem;
+  padding-inline: 1.35rem;
+  flex: none;
+}
+
+@media (min-width: 52rem) {
+  .buybar {
+    display: none;
+  }
+}
+
+/* --- Footer --------------------------------------------------------------- */
+
+.footer {
+  padding-block: clamp(3.5rem, 8vw, 6rem) 2.5rem;
+}
+
+.footer__top {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+@media (min-width: 52rem) {
+  .footer__top {
+    grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 0.85fr));
+  }
+}
+
+.footer__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.footer__nav a {
+  text-decoration: none;
+  font-size: 0.92rem;
+  color: var(--fg-soft);
+  transition: color 0.3s var(--ease);
+}
+
+.footer__nav a:hover {
+  color: var(--fg);
+}
+
+.footer__heading {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1.35rem;
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+  color: var(--fg-soft);
+}
+
+.footer__bottom ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer__bottom a {
+  text-decoration: none;
+}
+
+.footer__bottom a:hover {
+  text-decoration: underline;
+}
+
+.socials {
+  display: flex;
+  gap: 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.socials a:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.socials svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: currentcolor;
+}
+
+/* --- Reveal on scroll -----------------------------------------------------
+ *
+ * The transform is applied by the `js` class, which main.js sets on <html>
+ * before first paint. Without it the content is simply visible: nothing on this
+ * site is allowed to depend on JavaScript to become readable.
+ */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(1.6rem);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Motion and print ----------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .marquee__track {
+    animation: none;
+  }
+}
+
+@media print {
+  .masthead,
+  .drawer,
+  .wa-fab,
+  .buybar,
+  .hero__scroll,
+  .marquee {
+    display: none !important;
+  }
+
+  .stage {
+    background: #fff !important;
+    color: #000 !important;
+  }
+}
