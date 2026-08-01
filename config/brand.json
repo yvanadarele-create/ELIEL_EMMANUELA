@@ -1,0 +1,53 @@
+{
+  "$comment": [
+    "Source de vérité unique pour tout ce qui change sans toucher au design :",
+    "numéros WhatsApp, réseaux sociaux, opérateurs de paiement, zones de livraison.",
+    "",
+    "Rien ici n’est un secret — ce fichier est public et commité exprès. Les vraies",
+    "clés (base de données, IA, paiement, livraison) vivent dans .env, jamais ici.",
+    "",
+    "Après modification : npm run sync — le script écrit ces valeurs dans les pages.",
+    "Les variables d'environnement du même nom l’emportent sur ce fichier."
+  ],
+
+  "site": {
+    "url": "https://elielemmanuela.com",
+    "locale": "fr",
+    "currency": "XOF",
+    "currencySymbol": "F CFA",
+    "city": "Abidjan",
+    "country": "CI"
+  },
+
+  "whatsapp": {
+    "primary": {
+      "role": "commandes",
+      "number": "2250000000000",
+      "display": "+225 00 00 00 00 00",
+      "hours": "Lundi – samedi, 8 h – 20 h"
+    },
+    "secondary": {
+      "role": "service client et suivi de livraison",
+      "number": "2250000000000",
+      "display": "+225 00 00 00 00 00",
+      "hours": "Lundi – samedi, 8 h – 20 h"
+    }
+  },
+
+  "socials": {
+    "instagram": "elielemmanuela",
+    "tiktok": "elielemmanuela",
+    "facebook": "elielemmanuela",
+    "email": "contact@elielemmanuela.com"
+  },
+
+  "payments": [
+    { "id": "wave", "name": "Wave" },
+    { "id": "orange-money", "name": "Orange Money" },
+    { "id": "moov-money", "name": "Moov Money" },
+    { "id": "mtn-momo", "name": "MTN MoMo" },
+    { "id": "djamo", "name": "Djamo" },
+    { "id": "western-union", "name": "Western Union", "note": "pour les commandes depuis l’étranger" },
+    { "id": "cash", "name": "Espèces à la livraison", "note": "district d’Abidjan uniquement" }
+  ]
+}

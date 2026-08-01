@@ -1750,3 +1750,9 @@ p:last-child {
   height: auto;
   margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
 }
+
+/* Parenthetical qualifier inside a generated list — "(Abidjan uniquement)". */
+.u-note {
+  color: var(--fg-soft);
+  font-size: 0.88em;
+}

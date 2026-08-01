@@ -142,7 +142,7 @@ const placeholders = pages.filter((page) => read(page).includes(`wa.me/${PLACEHO
 if (placeholders.length) {
   warnings.push(
     `the WhatsApp number is still the placeholder on ${placeholders.length} page(s) — ` +
-      `run: ELIEL_WHATSAPP="225…" node scripts/site.mjs`,
+      `set whatsapp.primary/secondary in config/brand.json, then: npm run sync`,
   );
 }
 
@@ -176,6 +176,24 @@ for (const name of REGIONS) {
       );
     }
   }
+}
+
+/* --- Config regions -------------------------------------------------------
+ *
+ * The payment operators and the two WhatsApp lines are rendered from
+ * config/brand.json between @data markers. An empty region means the config was
+ * edited and the sync never run, and the page then silently shows nothing where
+ * the ways to pay should be — invisible in review, fatal in use.
+ */
+for (const page of pages) {
+  const html = read(page);
+  for (const [, name, body] of html.matchAll(/<!-- @data:([a-z-]+) -->([\s\S]*?)<!-- \/@data:\1 -->/g)) {
+    if (body.trim() === "") problems.push(`${page}: @data:${name} region is empty — run npm run sync`);
+  }
+  const opens = [...html.matchAll(/<!-- @data:([a-z-]+) -->/g)].map((m) => m[1]);
+  const closes = [...html.matchAll(/<!-- \/@data:([a-z-]+) -->/g)].map((m) => m[1]);
+  for (const name of opens) if (!closes.includes(name)) problems.push(`${page}: @data:${name} is never closed`);
+  for (const name of closes) if (!opens.includes(name)) problems.push(`${page}: /@data:${name} closes a region that never opened`);
 }
 
 /* --- SEO ------------------------------------------------------------------ */

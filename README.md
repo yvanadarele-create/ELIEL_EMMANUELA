@@ -236,6 +236,43 @@ Commitez le résultat. Chaque variable est facultative : une variable non
 définie laisse ce qui est déjà en place, le numéro peut donc être posé
 aujourd'hui et le domaine le mois prochain.
 
+## ⚙️ Configuration
+
+`config/brand.json` est la source de vérité unique pour tout ce qui change sans
+toucher au design : les **deux numéros WhatsApp**, les réseaux sociaux, les
+**opérateurs de paiement acceptés** et la devise. Rien de secret n’y figure —
+le fichier est public et commité exprès.
+
+Modifiez-le, puis lancez `npm run sync`. Le script écrit les valeurs dans les
+neuf pages, entre des marqueurs `<!-- @data:nom -->` :
+
+| Région | Page | Contenu |
+| --- | --- | --- |
+| `payments-list` | `livraison-retours` | la liste à puces des moyens de paiement |
+| `payments-inline` | `faq` | la même liste, en phrase |
+| `whatsapp-lines` | `contact` | les deux numéros, avec rôle et horaires |
+
+Ajouter un opérateur se fait donc à un seul endroit. `npm test` échoue si une
+région est vide — c’est-à-dire si la config a changé sans que la
+synchronisation ait été relancée.
+
+### Les deux numéros WhatsApp
+
+`whatsapp.primary` reçoit les **commandes** : tous les boutons « Commander »
+pointent dessus. `whatsapp.secondary` reçoit le **service client et le suivi de
+livraison**. Un lien est routé vers le second en lui ajoutant
+`data-wa="secondary"` ; sans cet attribut il part vers le premier, ce qui est le
+bon défaut pour un bouton de vente.
+
+`WHATSAPP_NUMBER_1` et `WHATSAPP_NUMBER_2` l’emportent sur le fichier, pour
+qu’une préproduction utilise d’autres numéros sans modifier un fichier suivi.
+
+### Secrets
+
+Les vraies clés — base de données, IA, paiement, livraison, authentification —
+vivent dans `.env`, jamais dans `config/brand.json` ni dans le code client.
+Voir `.env.example`.
+
 ## 📁 Structure
 
 | Chemin | Contenu |
@@ -248,6 +285,8 @@ aujourd'hui et le domaine le mois prochain.
 | `assets/js/main.js` | amélioration progressive uniquement |
 | `assets/img/` | marque et illustrations produit |
 | `assets/fonts/` | Cormorant Garamond et Manrope, auto-hébergées |
+| `config/brand.json` | numéros, réseaux, opérateurs de paiement |
+| `.env.example` | les secrets attendus, sans valeurs |
 | `scripts/` | outillage : `check.mjs`, `site.mjs`, `assets.mjs` |
 
 ### Le voyage chromatique

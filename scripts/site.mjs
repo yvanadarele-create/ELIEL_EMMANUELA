@@ -43,7 +43,16 @@ const appRoot = resolve(here, "..");
 const DEFAULT_SITE = "https://elielemmanuela.com";
 const PLACEHOLDER_NUMBER = "2250000000000";
 
-/* --- Inputs --------------------------------------------------------------- */
+/* --- Inputs --------------------------------------------------------------
+ *
+ * Two sources, in this order: an environment variable if it is set, otherwise
+ * config/brand.json. The JSON file is the committed default and is deliberately
+ * public — it holds nothing secret. The environment wins so that a preview
+ * deployment can point at a different domain or a test WhatsApp number without
+ * editing a tracked file.
+ */
+
+const config = JSON.parse(readFileSync(join(appRoot, "config/brand.json"), "utf8"));
 
 const normaliseUrl = (value) =>
   (/^https?:\/\//.test(value) ? value : `https://${value}`).replace(/\/+$/, "");
@@ -55,19 +64,39 @@ function resolveBaseUrl() {
   // Vercel's production domain, not VERCEL_URL: the latter is the per-deployment
   // hostname and would bake a throwaway preview domain into the canonicals.
   const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  return vercel ? normaliseUrl(vercel) : DEFAULT_SITE;
+  if (vercel) return normaliseUrl(vercel);
+
+  return normaliseUrl(config.site.url);
 }
 
 const site = resolveBaseUrl();
 const handle = (value) => value?.trim().replace(/^@/, "");
+const digits = (value) => value?.replace(/\D/g, "");
+
+/**
+ * A WhatsApp line. `number` is what wa.me needs (digits only); `display` is what
+ * a human reads. An environment override replaces both, because a number typed
+ * as "225 07 11 22 33 44" should keep its own spacing on the page.
+ */
+const line = (key, fallback) => {
+  const override = process.env[key];
+  return {
+    number: digits(override) || digits(fallback.number),
+    display: override?.trim() || fallback.display,
+    role: fallback.role,
+    hours: fallback.hours,
+  };
+};
+
+const whatsapp = {
+  primary: line("WHATSAPP_NUMBER_1", config.whatsapp.primary),
+  secondary: line("WHATSAPP_NUMBER_2", config.whatsapp.secondary),
+};
 
 const contact = {
-  // wa.me wants digits only; the displayed form keeps whatever spacing was given.
-  whatsapp: process.env.ELIEL_WHATSAPP?.replace(/\D/g, ""),
-  whatsappDisplay: process.env.ELIEL_WHATSAPP?.trim(),
-  instagram: handle(process.env.ELIEL_INSTAGRAM),
-  tiktok: handle(process.env.ELIEL_TIKTOK),
-  email: process.env.ELIEL_EMAIL?.trim(),
+  instagram: handle(process.env.ELIEL_INSTAGRAM) || handle(config.socials.instagram),
+  tiktok: handle(process.env.ELIEL_TIKTOK) || handle(config.socials.tiktok),
+  email: process.env.ELIEL_EMAIL?.trim() || config.socials.email,
 };
 
 /* --- Shared chrome -------------------------------------------------------- */
@@ -94,6 +123,40 @@ const applyCurrent = (html, path) =>
   html.replace(/<a([^>]*?)href="([^"]+)"([^>]*)>/g, (match, before, href, after) =>
     href === path ? `<a${before}href="${href}"${after} aria-current="page">` : match,
   );
+
+/* --- Data regions ---------------------------------------------------------
+ *
+ * Fragments generated from config/brand.json and written between markers. The
+ * list of payment operators appears on three pages in three different shapes,
+ * so each region gets its own renderer rather than one generic dump. Adding an
+ * operator is then a one-line edit in the config instead of three edits, one of
+ * which gets forgotten.
+ */
+const paymentName = (p) => (p.note ? `${p.name} <span class="u-note">(${p.note})</span>` : p.name);
+
+const DATA_REGIONS = {
+  "payments-list": (cfg) =>
+    "\n" + cfg.payments.map((p) => `            <li>${paymentName(p)}</li>`).join("\n") + "\n          ",
+
+  "payments-inline": (cfg) => cfg.payments.map((p) => p.name).join(", "),
+
+  "whatsapp-lines": () =>
+    "\n" +
+    [
+      ["primary", "tel", "commandes"],
+      ["secondary", "tel2", "service client"],
+    ]
+      .map(
+        ([key, attr, label]) =>
+          `        <div>\n` +
+          `          <dt>WhatsApp ${label}</dt>\n` +
+          `          <dd><a href="tel:+${whatsapp[key].number}" data-contact="${attr}">${whatsapp[key].display}</a>` +
+          ` — ${whatsapp[key].role}. ${whatsapp[key].hours}.</dd>\n` +
+          `        </div>`,
+      )
+      .join("\n") +
+    "\n      ",
+};
 
 /* --- Rewrites ------------------------------------------------------------- */
 
@@ -142,37 +205,46 @@ for (const file of pages) {
     html = html.split(previousSite).join(site);
   }
 
-  // 3. Contact details
-  if (contact.whatsapp) {
-    html = html.replace(/https:\/\/wa\.me\/\d+/g, `https://wa.me/${contact.whatsapp}`);
-    html = html.replace(/href="tel:\+\d+"/g, `href="tel:+${contact.whatsapp}"`);
-  }
-  if (contact.whatsappDisplay) {
-    html = html.replace(
-      /(<a[^>]*data-contact="tel"[^>]*>)[^<]*(<\/a>)/g,
-      (_, open, close) => `${open}+${contact.whatsappDisplay.replace(/^\+/, "")}${close}`,
-    );
-  }
+  // 3. Contact details.
+  //
+  //    Two WhatsApp lines, told apart by data-wa="secondary" on the anchor.
+  //    Anything unmarked is an order button and therefore primary — that
+  //    default is what keeps a newly added "Commander" link correct without
+  //    anyone remembering to annotate it.
+  html = html.replace(/<a\b[^>]*\bhref="https:\/\/wa\.me\/\d+/g, (tag) => {
+    const which = /data-wa="secondary"/.test(tag) ? "secondary" : "primary";
+    return tag.replace(/wa\.me\/\d+/, `wa.me/${whatsapp[which].number}`);
+  });
+
+  html = html.replace(/(<a[^>]*data-contact="tel2"[^>]*href=")tel:\+?\d*/g,
+    (_, open) => `${open}tel:+${whatsapp.secondary.number}`);
+  html = html.replace(/(<a[^>]*data-contact="tel"[^>]*href=")tel:\+?\d*/g,
+    (_, open) => `${open}tel:+${whatsapp.primary.number}`);
+  html = html.replace(/(<a[^>]*data-contact="tel2"[^>]*>)[^<]*(<\/a>)/g,
+    (_, open, close) => `${open}${whatsapp.secondary.display}${close}`);
+  html = html.replace(/(<a[^>]*data-contact="tel"[^>]*>)[^<]*(<\/a>)/g,
+    (_, open, close) => `${open}${whatsapp.primary.display}${close}`);
+
   if (contact.instagram) {
     html = html.replace(/https:\/\/instagram\.com\/[A-Za-z0-9._]+/g, `https://instagram.com/${contact.instagram}`);
-    html = html.replace(
-      /(<a[^>]*data-contact="instagram"[^>]*>)@[A-Za-z0-9._]+(<\/a>)/g,
-      (_, open, close) => `${open}@${contact.instagram}${close}`,
-    );
+    html = html.replace(/(<a[^>]*data-contact="instagram"[^>]*>)@[A-Za-z0-9._]+(<\/a>)/g,
+      (_, open, close) => `${open}@${contact.instagram}${close}`);
   }
   if (contact.tiktok) {
     html = html.replace(/https:\/\/tiktok\.com\/@[A-Za-z0-9._]+/g, `https://tiktok.com/@${contact.tiktok}`);
-    html = html.replace(
-      /(<a[^>]*data-contact="tiktok"[^>]*>)@[A-Za-z0-9._]+(<\/a>)/g,
-      (_, open, close) => `${open}@${contact.tiktok}${close}`,
-    );
+    html = html.replace(/(<a[^>]*data-contact="tiktok"[^>]*>)@[A-Za-z0-9._]+(<\/a>)/g,
+      (_, open, close) => `${open}@${contact.tiktok}${close}`);
   }
   if (contact.email) {
     html = html.replace(/mailto:[^"']+/g, `mailto:${contact.email}`);
-    html = html.replace(
-      /(<a[^>]*data-contact="email"[^>]*>)[^<]*(<\/a>)/g,
-      (_, open, close) => `${open}${contact.email}${close}`,
-    );
+    html = html.replace(/(<a[^>]*data-contact="email"[^>]*>)[^<]*(<\/a>)/g,
+      (_, open, close) => `${open}${contact.email}${close}`);
+  }
+
+  // 4. Fragments rendered from config/brand.json.
+  for (const [name, render] of Object.entries(DATA_REGIONS)) {
+    const pattern = new RegExp(`(<!-- @data:${name} -->)[\\s\\S]*?(<!-- /@data:${name} -->)`, "g");
+    html = html.replace(pattern, (_, open, close) => `${open}${render(config)}${close}`);
   }
 
   if (html !== before) {
@@ -205,20 +277,15 @@ writeFileSync(
 
 /* --- Report --------------------------------------------------------------- */
 
-const missing = Object.entries({
-  ELIEL_WHATSAPP: contact.whatsapp,
-  ELIEL_INSTAGRAM: contact.instagram,
-  ELIEL_TIKTOK: contact.tiktok,
-  ELIEL_EMAIL: contact.email,
-})
-  .filter(([, value]) => !value)
-  .map(([name]) => name);
+const placeholderRemains = [whatsapp.primary.number, whatsapp.secondary.number].some(
+  (n) => n === PLACEHOLDER_NUMBER,
+);
 
 console.log(`eliel-site: ${site} — ${pages.length} pages, ${touched} rewritten, sitemap has ${indexable.length} URLs`);
 
-if (readFileSync(join(appRoot, "index.html"), "utf8").includes(`wa.me/${PLACEHOLDER_NUMBER}`)) {
+if (placeholderRemains) {
   console.warn(
     `  ! the WhatsApp number is still the placeholder — every "Commander" button leads nowhere.\n` +
-      `    Set ${missing.join(", ") || "ELIEL_WHATSAPP"} and re-run.`,
+      `    Set WHATSAPP_NUMBER_1 and WHATSAPP_NUMBER_2, or edit config/brand.json, then re-run.`,
   );
 }
