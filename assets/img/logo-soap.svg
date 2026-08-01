@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="ls-title">
+  <title id="ls-title">ELIEL EMMANUELA — Moroccan Black Soap — Le rituel d’une peau naturellement sublime</title>
+  <!--
+    Emblème « univers savon noir ». Interprétation vectorielle du sceau vert et
+    or : rosace marocaine, couronne de laurier, médaillon E, signature.
+    Remplaçable par le fichier officiel — voir README, section « Les logos ».
+
+    Comme pour l’emblème cheveux, chaque ligne porte un textLength : le repli
+    Georgia est plus large que Cormorant et déborderait du sceau.
+  -->
+  <defs>
+    <radialGradient id="ls-ground" cx="0.5" cy="0.36" r="0.8">
+      <stop offset="0" stop-color="#1D5B4C"/>
+      <stop offset="0.62" stop-color="#123F35"/>
+      <stop offset="1" stop-color="#0A2A24"/>
+    </radialGradient>
+    <linearGradient id="ls-medal" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#226355"/>
+      <stop offset="1" stop-color="#0E3B33"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="300" cy="300" r="300" fill="url(#ls-ground)"/>
+  <circle cx="300" cy="300" r="282" fill="none" stroke="#C8A96B" stroke-width="4"/>
+  <circle cx="300" cy="300" r="268" fill="none" stroke="#C8A96B" stroke-width="1.2" opacity="0.55"/>
+
+  <!-- Rosace marocaine -->
+  <g fill="none" stroke="#C8A96B" stroke-width="2" transform="translate(300 92)">
+    <circle r="30"/>
+    <circle r="18"/>
+    <circle r="6"/>
+    <g id="ls-petal"><path d="M0-30C10-22 10-8 0 0-10-8-10-22 0-30z"/></g>
+    <use href="#ls-petal" transform="rotate(45)"/>
+    <use href="#ls-petal" transform="rotate(90)"/>
+    <use href="#ls-petal" transform="rotate(135)"/>
+    <use href="#ls-petal" transform="rotate(180)"/>
+    <use href="#ls-petal" transform="rotate(225)"/>
+    <use href="#ls-petal" transform="rotate(270)"/>
+    <use href="#ls-petal" transform="rotate(315)"/>
+  </g>
+
+  <!-- Couronne de laurier, tenue à l’écart du médaillon -->
+  <g stroke="#C8A96B" stroke-width="2.4" fill="none" stroke-linecap="round">
+    <path d="M116 210c-20 72-6 134 30 178"/>
+    <path d="M484 210c20 72 6 134-30 178"/>
+  </g>
+  <g fill="#7E9670" stroke="#C8A96B" stroke-width="1.3">
+    <ellipse cx="104" cy="252" rx="27" ry="10" transform="rotate(-62 104 252)"/>
+    <ellipse cx="102" cy="308" rx="28" ry="10" transform="rotate(-78 102 308)"/>
+    <ellipse cx="110" cy="364" rx="27" ry="10" transform="rotate(-92 110 364)"/>
+    <ellipse cx="496" cy="252" rx="27" ry="10" transform="rotate(62 496 252)"/>
+    <ellipse cx="498" cy="308" rx="28" ry="10" transform="rotate(78 498 308)"/>
+    <ellipse cx="490" cy="364" rx="27" ry="10" transform="rotate(92 490 364)"/>
+  </g>
+  <g fill="#C8A96B">
+    <ellipse cx="136" cy="228" rx="19" ry="7" transform="rotate(-48 136 228)"/>
+    <ellipse cx="134" cy="286" rx="20" ry="7" transform="rotate(-68 134 286)"/>
+    <ellipse cx="142" cy="342" rx="19" ry="7" transform="rotate(-84 142 342)"/>
+    <ellipse cx="464" cy="228" rx="19" ry="7" transform="rotate(48 464 228)"/>
+    <ellipse cx="466" cy="286" rx="20" ry="7" transform="rotate(68 466 286)"/>
+    <ellipse cx="458" cy="342" rx="19" ry="7" transform="rotate(84 458 342)"/>
+  </g>
+
+  <!-- Médaillon E -->
+  <circle cx="300" cy="272" r="70" fill="url(#ls-medal)" stroke="#C8A96B" stroke-width="3.5"/>
+  <g fill="none" stroke="#C8A96B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M282 236v72M282 236h38M282 272h28M282 308h38"/>
+  </g>
+  <path d="M330 254c15 5 21 18 17 33-15-2-23-13-17-33z" fill="#7E9670"/>
+
+  <text x="300" y="400" text-anchor="middle" fill="#DCC48C" textLength="336" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif" font-size="48">ELIEL EMMANUELA</text>
+  <text x="300" y="434" text-anchor="middle" fill="#C8A96B" textLength="256" lengthAdjust="spacingAndGlyphs"
+        font-family="Manrope, ui-sans-serif, system-ui, sans-serif" font-size="19">MOROCCAN BLACK SOAP</text>
+
+  <path d="M162 462h112M326 462h112" stroke="#C8A96B" stroke-width="1.2" opacity="0.75"/>
+  <path d="M300 456l7 6-7 6-7-6z" fill="#C8A96B"/>
+
+  <text x="300" y="490" text-anchor="middle" fill="#EFE6D4" textLength="268" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif"
+        font-style="italic" font-size="26">Le rituel d’une peau</text>
+  <text x="300" y="520" text-anchor="middle" fill="#EFE6D4" textLength="280" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif"
+        font-style="italic" font-size="26">naturellement sublime.</text>
+</svg>

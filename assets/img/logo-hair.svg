@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="lh-title">
+  <title id="lh-title">ELIEL EMMANUELA — L’excellence naturelle au service de chaque chevelure</title>
+  <!--
+    Emblème « univers cheveux ». Interprétation vectorielle du logo rose poudré :
+    cercle bordé d’or, monogramme EE couronné, rameau doré, signature.
+    Remplaçable par le fichier officiel — voir README, section « Les logos ».
+
+    Chaque ligne de texte porte un textLength : quand la police Cormorant n’est
+    pas disponible (SVG chargé en <img>, hors du document), le repli Georgia est
+    plus large et déborderait du cercle. textLength verrouille la largeur.
+  -->
+  <defs>
+    <radialGradient id="lh-ground" cx="0.42" cy="0.34" r="0.78">
+      <stop offset="0" stop-color="#FDF5F3"/>
+      <stop offset="0.62" stop-color="#F7E7E7"/>
+      <stop offset="1" stop-color="#EBD2D2"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="300" cy="300" r="296" fill="url(#lh-ground)"/>
+  <circle cx="300" cy="300" r="290" fill="none" stroke="#C79A5E" stroke-width="7"/>
+  <circle cx="300" cy="300" r="274" fill="none" stroke="#D4B08C" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- Couronne -->
+  <g fill="#B98F5B">
+    <path d="M266 168l10-34 12 22 12-36 12 36 12-22 10 34z"/>
+    <rect x="264" y="172" width="72" height="9" rx="4"/>
+    <circle cx="300" cy="122" r="6"/>
+    <circle cx="272" cy="128" r="4"/>
+    <circle cx="328" cy="128" r="4"/>
+  </g>
+
+  <!-- Monogramme : deux E, le second chevauchant le premier -->
+  <g fill="none" stroke="#B98F5B" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M248 200v112M248 200h54M248 256h42M248 312h54"/>
+  </g>
+  <g fill="none" stroke="#C79A5E" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M308 200v112M308 200h54M308 256h42M308 312h54"/>
+  </g>
+
+  <!-- Rameau de séparation -->
+  <g stroke="#C79A5E" stroke-width="2.2" fill="none" stroke-linecap="round">
+    <path d="M196 352h88M316 352h88"/>
+    <path d="M232 352c-10-11-10-21 0-29 9 9 9 19 0 29z"/>
+    <path d="M262 352c-9-11-8-21 1-28 8 9 7 19-1 28z"/>
+    <path d="M368 352c10-11 10-21 0-29-9 9-9 19 0 29z"/>
+    <path d="M338 352c9-11 8-21-1-28-8 9-7 19 1 28z"/>
+  </g>
+  <path d="M300 344l9 8-9 8-9-8z" fill="#C79A5E"/>
+
+  <text x="300" y="412" text-anchor="middle" fill="#8A6A34" textLength="250" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif" font-size="56">ELIEL</text>
+  <text x="300" y="452" text-anchor="middle" fill="#2A1F1B" textLength="280" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif" font-size="38">EMMANUELA</text>
+
+  <path d="M176 478h100M324 478h100" stroke="#C79A5E" stroke-width="1.2" opacity="0.8"/>
+  <path d="M300 472l7 6-7 6-7-6z" fill="#C79A5E"/>
+
+  <text x="300" y="508" text-anchor="middle" fill="#5B4A42" textLength="250" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif"
+        font-style="italic" font-size="22">L’excellence naturelle</text>
+  <text x="300" y="536" text-anchor="middle" fill="#5B4A42" textLength="270" lengthAdjust="spacingAndGlyphs"
+        font-family="Cormorant Garamond, Iowan Old Style, Georgia, serif"
+        font-style="italic" font-size="22">au service de chaque chevelure.</text>
+</svg>

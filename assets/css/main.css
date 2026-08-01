@@ -1738,3 +1738,15 @@ p:last-child {
     color: #000 !important;
   }
 }
+
+/* --- Brand emblems --------------------------------------------------------
+ *
+ * The circular seal of each universe, sitting above the heading that opens it.
+ * Held small on purpose: it is a signature, not a hero image, and at any larger
+ * size it competes with the product illustration next to it.
+ */
+.emblem {
+  width: clamp(6rem, 11vw, 8.5rem);
+  height: auto;
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+}
