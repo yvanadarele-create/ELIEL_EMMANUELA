@@ -287,7 +287,10 @@ Voir `.env.example`.
 | `assets/fonts/` | Cormorant Garamond et Manrope, auto-hébergées |
 | `config/brand.json` | numéros, réseaux, opérateurs de paiement |
 | `.env.example` | les secrets attendus, sans valeurs |
-| `scripts/` | outillage : `check.mjs`, `site.mjs`, `assets.mjs` |
+| `api/` | fonctions serverless : catalogue, panier, commande, livraison |
+| `lib/` | logique métier : prix, panier, commande, transporteur, paiement |
+| `db/migrations/` | le schéma, en SQL |
+| `scripts/` | outillage : `check`, `site`, `assets`, `migrate`, `seed`, `smoke` |
 
 ### Le voyage chromatique
 
@@ -350,6 +353,110 @@ Les icônes matricielles (`icon-*.png`, `apple-touch-icon.png`, `favicon.ico`,
 d'outils image ici, donc `scripts/assets.mjs` rastérise lui-même la marque et
 la carte de partage. Le résultat est commité ; un déploiement normal ne
 l'exécute jamais.
+
+## 🗄️ Le backend
+
+Le site reste neuf pages HTML statiques. Le commerce vit derrière, dans des
+fonctions serverless Vercel sous `/api`, adossées à Postgres (Neon). Aucune
+page n'a été réécrite, aucun framework n'a été introduit.
+
+### Démarrer
+
+```bash
+npm install
+DATABASE_URL='postgres://…' npm run migrate   # applique db/migrations/*.sql
+DATABASE_URL='postgres://…' npm run seed      # catalogue, zones, réglages
+DATABASE_URL='postgres://…' npm run smoke     # parcours complet, 39 vérifications
+```
+
+Sur Neon, utilisez la chaîne **« pooled »** (l'hôte contient `-pooler`) : une
+fonction serverless ouvre une connexion par instance, et le point de
+terminaison direct est épuisé en quelques minutes de trafic TikTok.
+
+### Le schéma
+
+30 tables dans `db/migrations/001_init.sql`, en un seul fichier lisible de bout
+en bout. Quatre conventions le traversent :
+
+* **Les montants sont des entiers, en francs CFA.** Le XOF n'a pas de
+  sous-unité. Pas de `NUMERIC`, pas de flottant, pas d'arrondi.
+* **Les énumérations sont `TEXT` + `CHECK`**, pas des types `ENUM` : ajouter un
+  statut de commande devient une migration d'une ligne.
+* **Les identifiants publics sont des colonnes distinctes** — `order_number`,
+  `slug`, `sku`, `code` — jamais l'UUID interne.
+* **`ON DELETE RESTRICT` sur tout ce qui touche une commande.** Supprimer un
+  produit ne doit pas pouvoir effacer ce qui a été vendu.
+
+Les invariants sont dans la base, pas seulement dans le code : le total d'une
+commande doit être égal à `sous-total − remise + livraison`, une remise ne peut
+pas dépasser le sous-total, un code promo ne peut pas être en minuscules, un
+produit ne peut avoir qu'une image principale. Une écriture fautive est
+refusée par Postgres même si elle vient d'ailleurs que de ce code.
+
+Les numéros de commande (`EE-2026-000123`) viennent d'une fonction SQL qui
+sérialise l'attribution par un verrou de ligne : deux commandes simultanées ne
+peuvent pas recevoir le même numéro.
+
+### Les routes
+
+| Route | Rôle |
+| --- | --- |
+| `GET /api/health` | base joignable, et ce qui reste à configurer |
+| `GET /api/products` · `GET /api/products/:slug` | catalogue et fiche produit |
+| `GET · POST /api/cart` | ouvrir et lire un panier |
+| `POST · PATCH · DELETE /api/cart/items` | ajouter, changer la quantité, retirer |
+| `POST · DELETE /api/cart/coupon` | appliquer et retirer un code |
+| `POST /api/checkout` | panier → commande, en une transaction |
+| `GET /api/orders/:number?phone=` | suivi de commande |
+| `GET /api/promotions` | promotions publiques et leur échéance |
+| `GET /api/shipping/zones` · `POST /api/shipping/quote` | zones, frais, délais |
+| `POST /api/whatsapp/link` | lien WhatsApp porteur de contexte |
+| `POST /api/analytics/collect` | événements du parcours |
+| `GET /api/inventory` · `GET /api/customers` | **401** tant que l'admin n'existe pas |
+
+### Ce que le backend tient
+
+* **Aucun montant ne vient du client.** Le panier n'accepte que des
+  identifiants de variante et des quantités ; les prix et les remises sont
+  relus en base à chaque lecture et recalculés dans la transaction de
+  commande. Un total falsifié dans le navigateur n'a nulle part où aller.
+* **Le panier vit en base**, pas dans le navigateur. Il survit au
+  rafraîchissement, au changement d'onglet et à l'aller-retour par WhatsApp —
+  le navigateur intégré d'Instagram vide volontiers le `localStorage`.
+* **Le stock se verrouille avant de se vendre.** `SELECT … FOR UPDATE` sur les
+  lignes d'inventaire concernées, puis relecture sous le verrou : deux clientes
+  ne peuvent pas acheter le dernier pot en même temps.
+* **Une seule lecture de `process.env`**, dans `lib/env.js`. C'est ce qui rend
+  vérifiable la règle « aucun secret ailleurs » : un `grep process.env` sur
+  `api/`, `lib/` et `assets/` ne doit renvoyer que ce fichier.
+* **Les routes qui exposeraient des données personnelles refusent** au lieu
+  d'attendre une authentification qui n'existe pas encore.
+
+### Les abstractions
+
+`SHIPPING_PROVIDER` choisit un transporteur qui implémente
+`calculateShipping`, `createShipment`, `getShipmentStatus` et
+`generateTrackingReference`. Le seul fourni, `internal`, lit les zones en base :
+c'est la livraison en propre d'aujourd'hui. Un transporteur avec une API
+s'ajoute dans `lib/shipping/` sans que le reste bouge.
+
+`PAYMENT_PROVIDER` fonctionne pareil. Le seul fourni, `manual`, enregistre une
+intention de paiement et attend qu'un humain la marque payée — c'est exactement
+ce qui se passe avec Wave, Orange Money, Moov, MoMo, Djamo, Western Union et
+les espèces à la livraison. Aucune fausse intégration ne prétend encaisser.
+
+L'agent IA a sa table de configuration et sa base de connaissance ; **aucune
+API n'est appelée**. Le principe est déjà posé dans le schéma : l'agent répond
+à partir du catalogue et de `ai_knowledge`, jamais de sa mémoire.
+
+### Vérification
+
+`npm run smoke` appelle les vraies fonctions de `/api` contre une vraie base,
+dans l'ordre où une cliente les déclenche : catalogue, zones, panier,
+rafraîchissement, plafond de stock, coupon, commande, réservation du stock,
+suivi, lien WhatsApp, attribution. 39 vérifications. C'est ce qui a trouvé, par
+exemple, qu'un `FOR UPDATE` sur le côté nullable d'un `LEFT JOIN` est refusé
+par Postgres — une erreur qu'aucune relecture n'aurait vue.
 
 ## 🚀 Déploiement
 

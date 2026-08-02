@@ -1,0 +1,8 @@
+# Ce qui n'a rien à faire dans un déploiement.
+#
+# Les migrations et les scripts se lancent depuis un poste de travail, jamais
+# depuis une fonction : les embarquer alourdirait chaque démarrage à froid.
+db/
+scripts/
+node_modules/
+*.log

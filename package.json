@@ -8,7 +8,17 @@
     "dev": "python3 -m http.server 4200",
     "test": "node scripts/check.mjs",
     "sync": "node scripts/site.mjs && node scripts/check.mjs",
-    "assets": "node scripts/assets.mjs"
+    "assets": "node scripts/assets.mjs",
+    "migrate": "node scripts/migrate.mjs",
+    "migrate:status": "node scripts/migrate.mjs --status",
+    "seed": "node scripts/seed.mjs",
+    "smoke": "node scripts/smoke.mjs"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "pg": "^8.22.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }

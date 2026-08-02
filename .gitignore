@@ -1,6 +1,11 @@
 # dependencies
 node_modules/
 
+# secrets — .env.example est commité, .env ne l'est jamais
+.env
+.env.*
+!.env.example
+
 # vercel
 .vercel/
 

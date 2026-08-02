@@ -1746,9 +1746,13 @@ p:last-child {
  * size it competes with the product illustration next to it.
  */
 .emblem {
-  width: clamp(6rem, 11vw, 8.5rem);
+  width: clamp(6.5rem, 12vw, 9.5rem);
   height: auto;
   margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  /* Le fichier officiel est un cercle sur un fond carré, et ce fond n'est pas
+   * exactement l'olive de la page : laissé tel quel, l'emblème se lit comme une
+   * vignette collée. Le masque circulaire ne garde que le sceau. */
+  border-radius: 50%;
 }
 
 /* Parenthetical qualifier inside a generated list — "(Abidjan uniquement)". */
