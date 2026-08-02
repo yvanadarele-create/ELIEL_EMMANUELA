@@ -9,7 +9,6 @@
     "Après modification : npm run sync — le script écrit ces valeurs dans les pages.",
     "Les variables d'environnement du même nom l’emportent sur ce fichier."
   ],
-
   "site": {
     "url": "https://elielemmanuela.com",
     "locale": "fr",
@@ -18,36 +17,58 @@
     "city": "Abidjan",
     "country": "CI"
   },
-
   "whatsapp": {
     "primary": {
       "role": "commandes",
-      "number": "2250000000000",
-      "display": "+225 00 00 00 00 00",
-      "hours": "Lundi – samedi, 8 h – 20 h"
+      "number": "2250101968650",
+      "display": "+225 01 01 96 86 50",
+      "hours": "Lundi – samedi, 8 h – 20 h",
+      "account": "WhatsApp Business"
     },
     "secondary": {
       "role": "service client et suivi de livraison",
-      "number": "2250000000000",
-      "display": "+225 00 00 00 00 00",
-      "hours": "Lundi – samedi, 8 h – 20 h"
+      "number": "2250709593794",
+      "display": "+225 07 09 59 37 94",
+      "hours": "Lundi – samedi, 8 h – 20 h",
+      "account": "WhatsApp"
     }
   },
-
   "socials": {
     "instagram": "elielemmanuela",
     "tiktok": "elielemmanuela",
     "facebook": "elielemmanuela",
     "email": "contact@elielemmanuela.com"
   },
-
   "payments": [
-    { "id": "wave", "name": "Wave" },
-    { "id": "orange-money", "name": "Orange Money" },
-    { "id": "moov-money", "name": "Moov Money" },
-    { "id": "mtn-momo", "name": "MTN MoMo" },
-    { "id": "djamo", "name": "Djamo" },
-    { "id": "western-union", "name": "Western Union", "note": "pour les commandes depuis l’étranger" },
-    { "id": "cash", "name": "Espèces à la livraison", "note": "district d’Abidjan uniquement" }
+    {
+      "id": "wave",
+      "name": "Wave"
+    },
+    {
+      "id": "orange-money",
+      "name": "Orange Money"
+    },
+    {
+      "id": "moov-money",
+      "name": "Moov Money"
+    },
+    {
+      "id": "mtn-momo",
+      "name": "MTN MoMo"
+    },
+    {
+      "id": "djamo",
+      "name": "Djamo"
+    },
+    {
+      "id": "western-union",
+      "name": "Western Union",
+      "note": "pour les commandes depuis l’étranger"
+    },
+    {
+      "id": "cash",
+      "name": "Espèces à la livraison",
+      "note": "district d’Abidjan uniquement"
+    }
   ]
 }

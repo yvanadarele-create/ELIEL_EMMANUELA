@@ -222,7 +222,16 @@ check("une commande part sur la ligne des ventes", link.body.link?.line === "pri
 
 const question = await invoke(whatsappLink, { method: "POST", body: { intent: "question" } });
 check("une question part sur le service client", question.body.link?.line === "secondary");
-check("le numéro de remplacement est signalé", question.body.link?.is_placeholder === true);
+check(
+  "les deux lignes sont des numéros réels, pas le remplacement",
+  link.body.link?.is_placeholder === false && question.body.link?.is_placeholder === false,
+  "un bouton « Commander » mènerait nulle part",
+);
+check(
+  "les deux lignes sont des numéros distincts",
+  link.body.link?.url.match(/wa\.me\/(\d+)/)[1] !== question.body.link?.url.match(/wa\.me\/(\d+)/)[1],
+  "commandes et service client pointent sur le même numéro",
+);
 
 const event = await invoke(analytics, {
   method: "POST",
