@@ -1763,3 +1763,286 @@ p:last-child {
   color: var(--fg-soft);
   font-size: 0.88em;
 }
+
+/* --- Commerce -------------------------------------------------------------
+ *
+ * Tout ce bloc habille des éléments insérés par assets/js/commerce.js une fois
+ * l'API confirmée. Rien ici ne s'affiche sur une page servie sans API : c'est
+ * voulu, la boutique doit rester vendable par WhatsApp quoi qu'il arrive.
+ */
+
+.cart-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  margin-right: 0.5rem;
+  background: none;
+  border: 1px solid color-mix(in srgb, currentcolor 35%, transparent);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.3s var(--ease);
+}
+
+.cart-button:hover {
+  border-color: currentcolor;
+}
+
+.cart-button__count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  padding-inline: 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--cocoa);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.cart-drawer[hidden] {
+  display: none;
+}
+
+.cart-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgb(14 59 51 / 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cart-drawer__panel {
+  width: min(30rem, 100%);
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+  background: var(--sand);
+  color: var(--ink);
+  animation: cart-in 0.35s var(--ease-out) both;
+}
+
+@keyframes cart-in {
+  from {
+    transform: translateX(2rem);
+    opacity: 0;
+  }
+}
+
+.cart-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgb(42 31 27 / 0.14);
+}
+
+.cart-drawer__head h2 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+}
+
+.cart-close {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: none;
+  background: none;
+  border: 1px solid rgb(42 31 27 / 0.18);
+  border-radius: 999px;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cart-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cart-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem 1rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid rgb(42 31 27 / 0.12);
+}
+
+.cart-line__name {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.cart-line__meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.cart-line__qty {
+  grid-column: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.cart-line__qty button {
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: 1px solid rgb(42 31 27 / 0.2);
+  border-radius: 999px;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cart-line__qty button:disabled {
+  opacity: 0.4;
+}
+
+.cart-line__total {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-variant-numeric: lining-nums tabular-nums;
+  white-space: nowrap;
+}
+
+.cart-totals {
+  margin: 1.5rem 0 0;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.cart-totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.cart-totals dt,
+.cart-totals dd {
+  margin: 0;
+}
+
+.cart-totals .is-discount {
+  color: var(--ink-gold);
+}
+
+.cart-totals__grand {
+  margin-top: 0.5rem;
+  padding-top: 0.85rem !important;
+  border-top: 1px solid rgb(42 31 27 / 0.14);
+  font-family: var(--serif);
+  font-size: 1.4rem;
+}
+
+.cart-note,
+.cart-message {
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.cart-message {
+  padding: 0.75rem 1rem;
+  background: color-mix(in srgb, var(--champagne) 26%, transparent);
+  border-left: 2px solid var(--ink-gold);
+  color: var(--ink);
+}
+
+.cart-empty {
+  padding: 3rem 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.cart-coupon {
+  display: flex;
+  gap: 0.6rem;
+  margin: 1.5rem 0;
+}
+
+.cart-coupon input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 0.8rem 1rem;
+  background: transparent;
+  border: 1px solid rgb(42 31 27 / 0.2);
+  border-radius: var(--radius);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cart-coupon .btn {
+  min-height: auto;
+  padding-inline: 1.1rem;
+  flex: none;
+}
+
+.cart-cta,
+.cart-details .btn {
+  width: 100%;
+}
+
+.cart-back {
+  margin-top: 0.75rem;
+}
+
+.cart-confirm__number {
+  margin: 1.75rem 0 0.5rem;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  letter-spacing: 0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-gold);
+}
+
+/* Prix et stock, une fois hydratés depuis la base. */
+.price__was {
+  margin-right: 0.5rem;
+  color: var(--fg-soft);
+  font-size: 0.72em;
+  text-decoration-thickness: 1px;
+}
+
+.price-badge {
+  display: inline-block;
+  margin-left: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--cocoa);
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  vertical-align: middle;
+}
+
+.stock-note {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--accent-ink);
+}
+
+.add-to-cart:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

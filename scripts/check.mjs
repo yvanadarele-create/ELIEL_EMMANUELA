@@ -90,7 +90,9 @@ for (const page of pages) {
     problems.push(`${where}: no .stage section inside <main>`);
   } else {
     const dark = /stage--(olive|emerald|cocoa)/.test(firstStage[1]);
-    const declared = /<body data-masthead-ink="light">/.test(html);
+    // L'attribut peut être accompagné d'autres (data-product, par exemple),
+    // donc on le cherche dans la balise plutôt que collé au chevron fermant.
+    const declared = /<body[^>]*\sdata-masthead-ink="light"/.test(html);
     if (dark && !declared) {
       problems.push(`${where}: opens on a dark stage but <body> lacks data-masthead-ink="light" — the masthead will be unreadable until the first scroll`);
     }

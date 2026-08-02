@@ -5,14 +5,15 @@
   "description": "ELIEL EMMANUELA — site vitrine, HTML/CSS/JS statique, sans étape de build",
   "type": "module",
   "scripts": {
-    "dev": "python3 -m http.server 4200",
+    "dev": "node scripts/dev-server.mjs",
     "test": "node scripts/check.mjs",
     "sync": "node scripts/site.mjs && node scripts/check.mjs",
     "assets": "node scripts/assets.mjs",
     "migrate": "node scripts/migrate.mjs",
     "migrate:status": "node scripts/migrate.mjs --status",
     "seed": "node scripts/seed.mjs",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "dev:static": "python3 -m http.server 4200"
   },
   "license": "UNLICENSED",
   "dependencies": {

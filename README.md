@@ -282,7 +282,8 @@ Voir `.env.example`.
 | `a-propos.html`, `avis.html`, `faq.html`, `contact.html`, `livraison-retours.html` | le reste |
 | `404.html` | page introuvable, `noindex` |
 | `assets/css/main.css` | toute la feuille de style |
-| `assets/js/main.js` | amélioration progressive uniquement |
+| `assets/js/main.js` | amélioration progressive : en-tête, tiroir, révélations |
+| `assets/js/commerce.js` | panier, prix, commande, WhatsApp — branché sur `/api` |
 | `assets/img/` | marque et illustrations produit |
 | `assets/fonts/` | Cormorant Garamond et Manrope, auto-hébergées |
 | `config/brand.json` | numéros, réseaux, opérateurs de paiement |
@@ -448,6 +449,46 @@ les espèces à la livraison. Aucune fausse intégration ne prétend encaisser.
 L'agent IA a sa table de configuration et sa base de connaissance ; **aucune
 API n'est appelée**. Le principe est déjà posé dans le schéma : l'agent répond
 à partir du catalogue et de `ai_knowledge`, jamais de sa mémoire.
+
+### La vitrine branchée sur l'API
+
+`assets/js/commerce.js` relie les pages statiques au backend : prix et
+disponibilité lus en base, panier serveur, livraison calculée, commande créée,
+récapitulatif WhatsApp.
+
+Une règle gouverne tout le fichier : **l'API enrichit, elle ne remplace pas.**
+Le HTML garde ses prix et ses textes. Si `/api` est injoignable — base non
+configurée, fonction froide, réseau coupé dans un navigateur intégré Instagram
+— la page reste ce qu'elle est aujourd'hui et vend par WhatsApp. Concrètement :
+le bouton « Ajouter au panier » n'est inséré qu'une fois le produit confirmé
+par le serveur, et le compteur de panier qu'une fois le panier lu. Une boutique
+qui devient blanche parce qu'une requête a échoué est pire qu'une boutique
+statique.
+
+Le parcours complet tient dans le tiroir panier, sans page de commande séparée :
+panier → coordonnées → commande créée → WhatsApp s'ouvre avec le récapitulatif.
+
+```
+Commande : EE-2026-000011
+
+2 × Savon Noir Marocain (Pot de 200 g) — 6 000 F
+
+Sous-total : 6 000 F
+Remise : −600 F
+Livraison : 1 000 F
+Total : 6 400 F
+
+Nom : Awa Koné
+Livraison : Rue des Jardins, en face de la pharmacie, Cocody
+Paiement : Wave
+```
+
+C'est ce message qui rend la confirmation d'un paiement mobile possible sans
+rien redemander à la cliente.
+
+L'attribution est capturée à l'arrivée et conservée : la cliente part sur
+WhatsApp et revient, et sans cette mémoire la campagne TikTok qui l'a amenée
+aurait disparu du parcours.
 
 ### Vérification
 
